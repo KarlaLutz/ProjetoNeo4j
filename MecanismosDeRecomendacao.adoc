@@ -7,14 +7,14 @@
 * *Introdução*
 ** <<introdução-ao-problema, Introdução ao Problema>>
 * *Cenário*
-** <<explanation of scenario, Descrevendo o Cenário>>
+** <<descrevendo-o-cenário, Descrevendo o Cenário>>
 * *Solução*
-** <<explanation_of_solution, Detalhamento da Solução>>
-** <<how_graph_databases_can_help, Como Bancos de Dados em Grafos podem ser Eficientes>>
+** <<detalhamento-da-solução, Detalhamento da Solução>>
+** <<como-bancdos-de-dados-em-grafos-podem-ser-eficientes, Como Bancos de Dados em Grafos podem ser Eficientes>>
 * *Modelo de Dados*
-** <<bank_fraud_data_model, Modelo do Banco de Dados de Mecanismos de Recomendação>>
+** <<modelo-do-banco-de-dados-de-mecanismos-de-recomendação, Modelo do Banco de Dados de Mecanismos de Recomendação>>
 * *Configuração do Banco de Dados*
-** <<sample_data_set, Exemplo do Banco de Dados>>
+** <<exemplo-do-banco-de-dados, Exemplo do Banco de Dados>>
 * *Cypher Queries*
 ** <<entity_link_analysis, Entity Link Analysis>>
 ** <<find_account_holders_who_share_more_than_one_piece_of_legitimate_contact_information, Find account holders who share more than one piece of legitimate contact information>>
