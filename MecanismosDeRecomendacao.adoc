@@ -10,7 +10,7 @@
 ** <<descrevendo-o-cenário, Descrevendo o Cenário>>
 * *Solução*
 ** <<detalhamento-da-solução, Detalhamento da Solução>>
-** <<como-bancdos-de-dados-em-grafos-podem-ser-eficientes, Como Bancos de Dados em Grafos podem ser Eficientes>>
+** <<como-bancos-de-dados-em-grafos-podem-ser-eficientes, Como Bancos de Dados em Grafos podem ser Eficientes>>
 * *Modelo de Dados*
 ** <<modelo-do-banco-de-dados-de-mecanismos-de-recomendação, Modelo do Banco de Dados de Mecanismos de Recomendação>>
 * *Configuração do Banco de Dados*
@@ -44,7 +44,7 @@ While no fraud prevention measures can ever be perfect, significant opportunity 
 
 Graph databases offer new methods of uncovering fraud rings and other sophisticated scams with a high-level of accuracy, and are capable of stopping advanced fraud scenarios in real-time.
 
-=== Como Bancdos de Dados em Grafos podem ser Eficientes
+=== Como Bancos de Dados em Grafos podem ser Eficientes
 
 Augmenting one’s existing fraud detection infrastructure to support ring detection can be done by running appropriate entity link analysis queries using a graph database, and running checks during key stages in the customer & account lifecycle, such as:
 
