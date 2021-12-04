@@ -24,7 +24,10 @@
 
 == Introdução ao Problema
 
-Banks and Insurance companies lose billions of dollars every year to fraud. Traditional methods of fraud detection play an important role in minimizing these losses. However increasingly sophisticated fraudsters have developed a variety of ways to elude discovery, both by working together, and by leveraging various other means of constructing false identities. 
+	É de conhecimentos comum que um banco de dados é uma parte essencial de qualquer aplicação. Por isso a decisão de qual banco de dados utilizar para a suya aplicação é muito crucial. Você deve levar em consideração diversos fatores, muitas vezes as empresas optam por bancos de dados relacionais, os quais não são uma escolha ruim, porém dependendo da quantidade de dados a serem armazenados e se a aplicação depende de uma performance alta, talvez a melhora escolha seja um banco de dados NoSQL.
+	Existem diversos tipos de bancos de dados NoSQL, porém quando precisamos tratar especificamente de conexão entre dados que geralmente são problemas que empresas tentam resolver com um banco de dados relacional comum, podemos dizer com toda certeza que um banco de dados baseado em Grafos é a melhor maneira de suportar um cenário onde temos um grande volume de dados e de variedades de estruturas de dados sem contar a alta escalabilidade e velocidade. 
+	Tendo em mente toda essa capacidade do banco de dados, será tratado neste documento um caso de uso de uma empresa de marketing que precisa melhorar o seu mecanismo de recomendação de produto para seus clientes, melhorando o desempenho operacional e ajudando na diminuição de gastos com campanhas de marketing que não possuim um ROI positivo.
+
 
 '''
 
