@@ -16,9 +16,9 @@
 * *Configuração do Banco de Dados*
 ** <<exemplo-do-banco-de-dados, Exemplo do Banco de Dados>>
 * *Cypher Queries*
-** <<criando_ofertas_para_o_e-mail_retargeting, Criando Ofertas para o E-mail Retargeting>>
-** <<criando_as_queries_conforme_regras_de_negócio_pré-estabelecidas, Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas>>
-** <<criando_o_e-mail_retargeting , Criando o E-mail Retargeting>>
+** <<criando-ofertas-para-o-e-mail-retargeting, Criando Ofertas para o E-mail Retargeting>>
+** <<criando-as-queries-conforme-regras-de-negócio-pré-estabelecidas, Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas>>
+** <<criando-o-e-mail-retargeting, Criando o E-mail Retargeting>>
 
 '''
 
@@ -171,7 +171,7 @@ MERGE(mariana)-[:BOUGHT]->(lenovo_legion_phone_duel);
 Para aumentar as taxas de conversão, devemos oferecer produtos alternativos aos usuários. Por exemplo, se um usuário mostra interesse em um determinado produto, mas não o compra, podemos criar uma oferta promocional que contenha opções de produtos alternativos.
 
 
-==== Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas
+=== Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas
 
 Primeiro, vamos criar uma oferta promocional para um usuário específico pensando nas regras que criamos anteriormente de produtos e preços:
 
@@ -193,7 +193,7 @@ RETURN free_product;
 //output
 //table
 
-==== Criando o E-mail Retargeting
+=== Criando o E-mail Retargeting
 
 Agora podemos criar nossa oferta que constará no e-mail. Neste ponto, vamos armazenar o e-mail do usuário como uma propriedade do relacionamento USED_TO_PROMOTE pois os produtos contidos na variável free_product não estão conectados a usuários específicos.
 
