@@ -48,7 +48,10 @@ Os ecommerces clientes da XYZ estão desistindo do produto devido a essa falha, 
 
 == Detalhamento da Solução
 
-Graph databases offer new methods of uncovering fraud rings and other sophisticated scams with a high-level of accuracy, and are capable of stopping advanced fraud scenarios in real-time.
+Sendo focado em entidades e as relações entre eles, um banco de dados em Grafo pode lidar facilmente com recomendações. Por ter esse foco, não importa a quantidade de nós dentro do data base, a capacidade de armazenamento e processamento será sempre a mesma, superando significativamente outros bancos de dados relacionais e não relacionais.
+
+Para a agência XYZ esse modelo de banco de dados irá substâncialmente resolver o cenário negativo com os clientes pois o problema de indexes incorretos deixará de existir uma vez que o banco de dados em Grafo não possui e essa estrutura e também esse banco tem uma alta escalabilidade da quantidade de dados armazenados como mencionado anteriormente e velocidade de atualização.
+
 
 === Como Bancos de Dados em Grafos podem ser Eficientes
 
