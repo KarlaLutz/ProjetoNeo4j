@@ -71,9 +71,11 @@ Pronto, agora é possível criar a promoção com os produtos resultantes das pe
 
 == Modelo do Banco de Dados de Mecanismos de Recomendação
 
-Graph databases have emerged as an ideal tool for overcoming these hurdles. Languages like Cypher provide a simple semantic for detecting rings in the graph, navigating connections in memory, in real time. 
+Os bancos de dados em Grafo tem um design para lidar com grandes quantidades de conexões, fornecendo vantagens como performance, flexibilidade e agilidade que são argumentos chave quando tratamos de um mecanismo de recomendação em marketing.
 
-The graph data model below represents how the data actually looks to the graph database, and illustrates how one can find rings by simply walking the graph:
+No nosso caso de uso utilizaremos o Neo4j. Um banco de dados que pode lidar facilmente com recomendações, superando significativamente outros bancos de dados relacionais e não relacionais.
+ 
+No grafo da imagem abaixo temos os nós e relações que representam onde cada produto está categorizado e qual a relação destes com os usuários:
 
 image::https://raw.github.com/neo4j-contrib/gists/master/other/images/BankFraud-1.png[Bank Fraud]
 
@@ -85,98 +87,79 @@ image::https://raw.github.com/neo4j-contrib/gists/master/other/images/BankFraud-
 [source,cypher]
 ----
 
-// Create account holders
-CREATE (accountHolder1:AccountHolder { 
-       		FirstName: "John", 
-       		LastName: "Doe", 
-       		UniqueId: "JohnDoe" }) 
+// Criando Produtos e Categorias
 
-CREATE (accountHolder2:AccountHolder { 
-			FirstName: "Jane", 
-			LastName: "Appleseed", 
-			UniqueId: "JaneAppleseed" }) 
+CREATE (smartphones:Category {title: 'Smartphones'}), 
+(notebooks:Category {title: 'Notebooks'}), 
+(cameras:Category {title: 'Cameras'})
 
-CREATE (accountHolder3:AccountHolder { 
-			FirstName: "Matt", 
-			LastName: "Smith", 
-			UniqueId: "MattSmith" }) 
+// Smartphones
+CREATE (lenovo_legion_phone_duel:Product {title: 'Lenovo Legion Phone Duel', price: 2400.00, shippability: true, availability: true})
+CREATE (samsung_galaxy_s21_ultra:Product {title: 'Samsung Galaxy S21 Ultra', price: 3700.00, shippability: true, availability: true})
+CREATE (moto_g100:Product {title: 'Moto G100', price: 2500.50, shippability: true, availability: false})
+CREATE (iphone_12:Product {title: 'Apple iPhone 12', price: 4500.20, shippability: true, availability: false})
+CREATE (xiaomi_mi_11:Product {title: 'Xiaomi Mi 11', price: 2826.87, shippability: true, availability: true})
+CREATE (huawei_p50:Product {title: 'Huawei P50 Lite', price: 2000.00, shippability: true, availability: true})
 
-// Create Address
-CREATE (address1:Address { 
-			Street: "123 NW 1st Street", 
-			City: "San Francisco", 
-			State: "California", 
-			ZipCode: "94101" })
+MERGE (lenovo_legion_phone_duel)-[:IS_IN]->(smartphones)
+MERGE (samsung_galaxy_s21_ultra)-[:IS_IN]->(smartphones)
+MERGE (moto_g100)-[:IS_IN]->(smartphones)
+MERGE (iphone_12)-[:IS_IN]->(smartphones)
+MERGE (xiaomi_mi_11)-[:IS_IN]->(smartphones)
+MERGE (huawei_p50)-[:IS_IN]->(smartphones)
 
-// Connect 3 account holders to 1 address
-CREATE (accountHolder1)-[:HAS_ADDRESS]->(address1), 
-       (accountHolder2)-[:HAS_ADDRESS]->(address1), 
-       (accountHolder3)-[:HAS_ADDRESS]->(address1)
+// Notebooks
+CREATE (acer_aspire_5:Product {title: 'Acer Aspire 5', price: 3800.00, shippability: true, availability: false})
+CREATE (hp_g8:Product {title: 'Notebook HP G8', price: 3600.30, shippability: true, availability: true})
+CREATE (dell_inspiron_15:Product {title: 'Dell Inspiron 15', price: 3250.50, shippability: true, availability: true})
+CREATE (apple_macbook_air_13:Product {title: 'Apple MacBook Air 13', price: 7500.00, shippability: false, availability: true})
 
-// Create Phone Number
-CREATE (phoneNumber1:PhoneNumber { PhoneNumber: "555-555-5555" })
+MERGE (acer_aspire_5)-[:IS_IN]->(notebooks)
+MERGE (hp_g8)-[:IS_IN]->(notebooks)
+MERGE (dell_inspiron_15)-[:IS_IN]->(notebooks)
+MERGE (apple_macbook_air_13)-[:IS_IN]->(notebooks)
 
-// Connect 2 account holders to 1 phone number
-CREATE (accountHolder1)-[:HAS_PHONENUMBER]->(phoneNumber1), 
-       (accountHolder2)-[:HAS_PHONENUMBER]->(phoneNumber1)
+// Cameras
+CREATE (canon_eos_rp:Product {title: 'Câmera Fotográfica EOS RP Body Canon', price: 7500.00, shippability: true, availability: false})
+CREATE (nikon_ricoh:Product {title: 'Nikon Câmera Digital GR III Ricoh', price: 6600.35, shippability: true, availability: true})
 
-// Create SSN
-CREATE (ssn1:SSN { SSN: "241-23-1234" })
+MERGE (canon_eos_rp)-[:IS_IN]->(cameras)
+MERGE (nikon_ricoh)-[:IS_IN]->(cameras)
 
-// Connect 2 account holders to 1 SSN
-CREATE (accountHolder2)-[:HAS_SSN]->(ssn1), 
-       (accountHolder3)-[:HAS_SSN]->(ssn1)
+----
 
-// Create SSN and connect 1 account holder
-CREATE (ssn2:SSN { SSN: "241-23-4567" })<-[:HAS_SSN]-(accountHolder1)
+//graph
 
-// Create Credit Card and connect 1 account holder
-CREATE (creditCard1:CreditCard { 
-			AccountNumber: "1234567890123456", 
-			Limit: 5000, Balance: 1442.23, 
-			ExpirationDate: "01-20", 
-			SecurityCode: "123" })<-[:HAS_CREDITCARD]-(accountHolder1)
 
-// Create Bank Account and connect 1 account holder
-CREATE (bankAccount1:BankAccount { 
-			AccountNumber: "2345678901234567", 
-			Balance: 7054.43 })<-[:HAS_BANKACCOUNT]-(accountHolder1)
+//setup
+[source,cypher]
+----
 
-// Create Credit Card and connect 1 account holder
-CREATE (creditCard2:CreditCard { 
-			AccountNumber: "1234567890123456", 
-			Limit: 4000, Balance: 2345.56, 
-			ExpirationDate: "02-20", 
-			SecurityCode: "456" })<-[:HAS_CREDITCARD]-(accountHolder2)
+// Criando Usuários
 
-// Create Bank Account and connect 1 account holder
-CREATE (bankAccount2:BankAccount { 
-			AccountNumber: "3456789012345678", 
-			Balance: 4231.12 })<-[:HAS_BANKACCOUNT]-(accountHolder2)
+CREATE (karla:Customer {name: 'Karla Lutz', email: 'karla_lutz@exemplo.com', age: 26})
+CREATE (ze:Customer {name: 'Zé Roberto Cavazzana', email: 'ze_cavazzana@exemplo', age: 32})
+CREATE (nailinao:Customer {name: 'Nailinao Cortez', email: 'nailinao_cortez@exemplo.com', age: 26})
+CREATE (mariana:Customer {name: 'Mariana Bege', email: 'menina_bege@examplo.com', age: 26})
 
-// Create Unsecured Loan and connect 1 account holder
-CREATE (unsecuredLoan2:UnsecuredLoan { 
-			AccountNumber: "4567890123456789-0", 
-			Balance: 9045.53, 
-			APR: .0541, 
-			LoanAmount: 12000.00 })<-[:HAS_UNSECUREDLOAN]-(accountHolder2)
+MERGE (karla)-[:VIEWED {views_count: 21}]->(nikon_ricoh)
+MERGE (karla)-[:ADDED_TO_WISH_LIST]->(iphone_12)
+MERGE (karla)-[:BOUGHT]->(apple_macbook_air_13)
 
-// Create Bank Account and connect 1 account holder
-CREATE (bankAccount3:BankAccount { 
-			AccountNumber: "4567890123456789", 
-			Balance: 12345.45 })<-[:HAS_BANKACCOUNT]-(accountHolder3)
+MERGE(ze)-[:VIEWED {views_count: 50}]->(xiaomi_mi_11)
+MERGE(ze)-[:VIEWED {views_count: 35}]->(dell_inspiron_15)
+MERGE(ze)-[:ADDED_TO_WISH_LIST]->(dell_inspiron_15)
 
-// Create Unsecured Loan and connect 1 account holder
-CREATE (unsecuredLoan3:UnsecuredLoan { 
-			AccountNumber: "5678901234567890-0", 
-			Balance: 16341.95, APR: .0341, 
-			LoanAmount: 22000.00 })<-[:HAS_UNSECUREDLOAN]-(accountHolder3)
+MERGE(nailinao)-[:VIEWED {views_count: 20}]->(canon_eos_rp)
+MERGE(nailinao)-[:ADDED_TO_WISH_LIST]->(samsung_galaxy_s21_ultra)
+MERGE(nailinao)-[:ADDED_TO_WISH_LIST]->(nikon_ricoh)
+MERGE(nailinao)-[:BOUGHT]->(xiaomi_mi_11)
 
-// Create Phone Number and connect 1 account holder
-CREATE (phoneNumber2:PhoneNumber { 
-			PhoneNumber: "555-555-1234" })<-[:HAS_PHONENUMBER]-(accountHolder3)
+MERGE(mariana)-[:ADDED_TO_WISH_LIST]->(acer_aspire_5)
+MERGE(mariana)-[:ADDED_TO_WISH_LIST]->(hp_g8)
+MERGE(mariana)-[:BOUGHT]->(huawei_p50)
+MERGE(mariana)-[:BOUGHT]->(lenovo_legion_phone_duel);
 
-RETURN *
 ----
 
 //graph
