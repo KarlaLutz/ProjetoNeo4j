@@ -10,7 +10,7 @@
 ** <<descrevendo-o-cenário, Descrevendo o Cenário>>
 * *Solução*
 ** <<detalhamento-da-solução, Detalhamento da Solução>>
-** <<como-bancos-de-dados-em-grafos-podem-ser-eficientes, Como Bancos de Dados em Grafos podem ser Eficientes>>
+** <<como-bancos-de-dados-em-grafos-podem-ser-eficientes-nesse-cenário, Como Bancos de Dados em Grafos podem ser Eficientes nesse Cenário>>
 * *Modelo de Dados*
 ** <<modelo-do-banco-de-dados-de-mecanismos-de-recomendação, Modelo do Banco de Dados de Mecanismos de Recomendação>>
 * *Configuração do Banco de Dados*
@@ -53,16 +53,19 @@ Sendo focado em entidades e as relações entre eles, um banco de dados em Grafo
 Para a agência XYZ esse modelo de banco de dados irá substâncialmente resolver o cenário negativo com os clientes pois o problema de indexes incorretos deixará de existir uma vez que o banco de dados em Grafo não possui e essa estrutura e também esse banco tem uma alta escalabilidade da quantidade de dados armazenados como mencionado anteriormente e velocidade de atualização.
 
 
-=== Como Bancos de Dados em Grafos podem ser Eficientes
+=== Como Bancos de Dados em Grafos podem ser Eficientes nesse Cenário
 
-Augmenting one’s existing fraud detection infrastructure to support ring detection can be done by running appropriate entity link analysis queries using a graph database, and running checks during key stages in the customer & account lifecycle, such as:
+A ideia é construirmos uma campanha promocional eficiente que aumente as taxas de conversão dos usuários nos ecommerces. Para alcançar este objetivo o mecanismo de recomendação (e-mail retargeting) deve oferecer produtos alternativos aos usuários, por exemplo, se um usuário mostra interesse em um determinado produto, mas não o compra, devemos criar uma oferta que contenha produtos alternativos baseados nesses dados pré coletados.
 
-* At the time the account is created
-* During an investigation
-* As soon as a credit balance threshold is hit
-* When a check is bounced
+Para criar esse mecanismo nós devemos: 
 
-Real-time graph traversals tied to the right kinds of events can help banks identify probable fraud rings: during or even before the Bust-Out occurs.
+* Criar uma query que consulte produtos que não estão na Wish List do usuário, que não foram vistos (clicados) e nem comprados;
+* Em paralelos, devemos ter uma query que consulte todas essas informações também. Quais produtos estão na Wish List, que foram vistos (clicados) e comprados;
+* É de extrema importância também restringir as recomendações, por isso devemos nos certificar de que essas duas consultas selecionem produtos nas mesmas categorias;
+* Por fim, por questões de relevância de preço, especificamos que apenas produtos que custam 20% a mais ou menos do que um item específico devem ser recomendados ao cliente.
+
+Pronto, agora é possível criar a promoção com os produtos resultantes das pesquisas das queries acima. O banco de dados em Grafo é super eficiente e excelente quando se trata de  desempenho, independentemente do número e profundidade das queries.
+
 
 '''
 
