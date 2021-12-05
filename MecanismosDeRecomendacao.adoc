@@ -16,9 +16,9 @@
 * *Configuração do Banco de Dados*
 ** <<exemplo-do-banco-de-dados, Exemplo do Banco de Dados>>
 * *Cypher Queries*
-** <<entity_link_analysis, Entity Link Analysis>>
-** <<find_account_holders_who_share_more_than_one_piece_of_legitimate_contact_information, Find account holders who share more than one piece of legitimate contact information>>
-** <<determine_the_financial_risk_of_a_possible_fraud_ring , Determine the financial risk of a possible fraud ring>>
+** <<criando_ofertas_para_o_e-mail_retargeting, Criando Ofertas para o E-mail Retargeting>>
+** <<criando_as_queries_conforme_regras_de_negócio_pré-estabelecidas, Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas>>
+** <<criando_o_e-mail_retargeting , Criando o E-mail Retargeting>>
 
 '''
 
@@ -166,52 +166,53 @@ MERGE(mariana)-[:BOUGHT]->(lenovo_legion_phone_duel);
 
 '''
 
-== Entity Link Analysis
+== Criando Ofertas para o E-mail Retargeting
 
-Performing entity link analysis on the above data model is demonstrated below.
+Para aumentar as taxas de conversão, devemos oferecer produtos alternativos aos usuários. Por exemplo, se um usuário mostra interesse em um determinado produto, mas não o compra, podemos criar uma oferta promocional que contenha opções de produtos alternativos.
 
-==== Find account holders who share more than one piece of legitimate contact information
+
+==== Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas
+
+Primeiro, vamos criar uma oferta promocional para um usuário específico pensando nas regras que criamos anteriormente de produtos e preços:
+
 
 [source,cypher]
 ----
-MATCH 		(accountHolder:AccountHolder)-[]->(contactInformation) 
-WITH 		contactInformation, 
-			count(accountHolder) AS RingSize 
-MATCH 		(contactInformation)<-[]-(accountHolder) 
-WITH 		collect(accountHolder.UniqueId) AS AccountHolders, 
-			contactInformation, RingSize
-WHERE 		RingSize > 1 
-RETURN 		AccountHolders AS FraudRing, 
-			labels(contactInformation) AS ContactType, 
-			RingSize
-ORDER BY 	RingSize DESC
+MATCH (ze:Customer {name: 'Zé Roberto Cavazzana'})
+MATCH (free_product:Product)
+WHERE NOT ((ze)-->(free_product))
+MATCH (product:Product)
+WHERE ((ze)-->(product))
+
+MATCH (free_product)-[:IS_IN]->()<-[:IS_IN]-(product)
+WHERE ((product.price - product.price * 0.20) >= free_product.price <= (product.price + product.price * 0.20))
+
+RETURN free_product;
 ----
 
 //output
 //table
 
-==== Determine the financial risk of a possible fraud ring
+==== Criando o E-mail Retargeting
+
+Agora podemos criar nossa oferta que constará no e-mail. Neste ponto, vamos armazenar o e-mail do usuário como uma propriedade do relacionamento USED_TO_PROMOTE pois os produtos contidos na variável free_product não estão conectados a usuários específicos.
+
 
 [source,cypher]
 ----
-MATCH 		(accountHolder:AccountHolder)-[]->(contactInformation) 
-WITH 		contactInformation, 
-			count(accountHolder) AS RingSize 
-MATCH 		(contactInformation)<-[]-(accountHolder), 
-			(accountHolder)-[r:HAS_CREDITCARD|HAS_UNSECUREDLOAN]->(unsecuredAccount)
-WITH 		collect(DISTINCT accountHolder.UniqueId) AS AccountHolders, 
-			contactInformation, RingSize,
-			SUM(CASE type(r)
-				WHEN 'HAS_CREDITCARD' THEN unsecuredAccount.Limit
-				WHEN 'HAS_UNSECUREDLOAN' THEN unsecuredAccount.Balance
-				ELSE 0
-			END) as FinancialRisk
-WHERE 		RingSize > 1
-RETURN 		AccountHolders AS FraudRing, 
-			labels(contactInformation) AS ContactType, 
-			RingSize, 
-			round(FinancialRisk) as FinancialRisk
-ORDER BY 	FinancialRisk DESC
+MATCH (ze:Customer {name: 'Zé Roberto Cavazzana'})
+MATCH (free_product:Product)
+WHERE NOT ((ze)-->(free_product))
+MATCH (product:Product)
+WHERE ((ze)-->(product))
+
+MATCH (free_product)-[:IS_IN]->()<-[:IS_IN]-(product)
+WHERE ((product.price - product.price * 0.20) >= free_product.price <= (product.price + product.price * 0.20))
+
+CREATE(offer:PromotionalOffer {type: 'personal_replacement_offer', content: 'Oferta de Recomendação Personalizada para ' + ze.name})
+WITH offer, free_product, ze
+MERGE(offer)-[rel:USED_TO_PROMOTE {email: ze.email}]->(free_product)
+RETURN offer, free_product, rel;
 ----
 
 //output
