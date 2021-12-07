@@ -35,9 +35,9 @@ Tendo em mente toda essa capacidade do banco de dados, será tratado neste docum
 
 == Descrevendo o Cenário
 
-É difícil encontrar uma empresa online que não utilize algum tipo de mecanismo de recomendação para atingir seus cliente com produtos ou serviços relevantes. Um bom mecanismo de recomendação deve correlacionar muitos dados e ser capaz de detectar rapidamente novos interesses, rapidamente compreendê-los, buscar na web e recomendar de volta para os usuários.
+É difícil encontrar uma empresa online que não utilize algum tipo de mecanismo de recomendação para atingir seus clientes com produtos ou serviços relevantes. Um bom mecanismo de recomendação deve correlacionar muitos dados e ser capaz de detectar rapidamente novos interesses, rapidamente compreendê-los, buscar na web e recomendar de volta para os usuários.
 
-Caso esse mecanismo não seja acertivo pode-se perde investimentos feitos na campanha de marketing por não ter um retorno, onde caso você esteja recomendando produtos para os usuários onde eles não possuem nenhum interesse, será apenas gerado um spam e essa campanha será ignorada. É exatamente o caso da agência de marketing XYZ, um dos produtos que a agência fornece à seus clientes é o E-mail Retargeting. Esse produto funciona com um mecanismo de recomendação que entende através de cookies a navegação do usuário nos websites dos ecommerces (clientes da agência) e dispara um e-mail pós navegação do usuário, com produtos que podem ser de interesse dele baseado no comportamento dele dentro do site.
+Caso esse mecanismo não seja assertivo pode-se perder investimentos feitos na campanha de marketing por não ter um retorno, onde caso você esteja recomendando produtos para os usuários onde eles não possuem nenhum interesse, será apenas gerado um spam e essa campanha será ignorada. É exatamente o caso da agência de marketing XYZ, um dos produtos que a agência fornece à seus clientes é o E-mail Retargeting. Esse produto funciona com um mecanismo de recomendação que entende através de cookies a navegação do usuário nos websites dos ecommerces (clientes da agência) e dispara um e-mail pós navegação do usuário, com produtos que podem ser de interesse dele baseado no comportamento dele dentro do site.
 
 A intenção é que esses produtos sejam produtos relacionados com as categorias pesquisadas e produtos visualizados, porém o mecanismo de e-mail retargeting da agência XYZ está falhando no sentido em que as relações dentro do atual banco de dados relacional não estão atualizando com a velocidade necessária e estão perdendo indexes. Como consequência dessa falha de arquitetura, os clientes estão sendo impactados por e-mails com produtos já comprados e estão entrando com vários chamados de reclamação de spam para os ecommerces.
 
@@ -48,9 +48,9 @@ Os ecommerces clientes da XYZ estão desistindo do produto devido a essa falha, 
 
 == Detalhamento da Solução
 
-Sendo focado em entidades e as relações entre eles, um banco de dados em Grafo pode lidar facilmente com recomendações. Por ter esse foco, não importa a quantidade de nós dentro do data base, a capacidade de armazenamento e processamento será sempre a mesma, superando significativamente outros bancos de dados relacionais e não relacionais.
+Sendo focado em entidades e nas relações entre eles, um banco de dados em Grafo pode lidar facilmente com recomendações. Por ter esse foco, não importa a quantidade de nós dentro do data base, a capacidade de armazenamento e processamento será sempre a mesma, superando significativamente outros bancos de dados relacionais e não relacionais.
 
-Para a agência XYZ esse modelo de banco de dados irá substâncialmente resolver o cenário negativo com os clientes pois o problema de indexes incorretos deixará de existir uma vez que o banco de dados em Grafo não possui e essa estrutura e também esse banco tem uma alta escalabilidade da quantidade de dados armazenados como mencionado anteriormente e velocidade de atualização.
+Para a agência XYZ esse modelo de banco de dados irá substancialmente resolver o cenário negativo com os clientes pois o problema de indexes incorretos deixará de existir uma vez que o banco de dados em Grafo não possui e essa estrutura e também esse banco tem uma alta escalabilidade da quantidade de dados armazenados como mencionado anteriormente e velocidade de atualização.
 
 
 === Como Bancos de Dados em Grafos podem ser Eficientes nesse Cenário
