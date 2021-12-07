@@ -77,7 +77,7 @@ No nosso caso de uso utilizaremos o Neo4j. Um banco de dados que pode lidar faci
  
 No grafo da imagem abaixo temos os nós e relações que representam onde cada produto está categorizado e qual a relação destes com os usuários:
 
-image::https://raw.github.com/neo4j-contrib/gists/master/other/images/BankFraud-1.png[Bank Fraud]
+image::https://github.com/KarlaLutz/pictures/blob/main/grafo.png[Grafo]
 
 '''
 
