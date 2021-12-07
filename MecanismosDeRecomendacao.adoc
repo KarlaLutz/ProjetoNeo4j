@@ -83,17 +83,21 @@ image::https://raw.github.com/neo4j-contrib/gists/master/other/images/BankFraud-
 
 == Exemplo do Banco de Dados
 
+Abaixo é possível encontrar as queries utilizadas para a geração do banco de dados.
+Todas foram criadas e executadas juntas, criando o banco de dados da imagem acima.
+
+
 //setup
 [source,cypher]
 ----
 
-// Criando Produtos e Categorias
+// Criando Categorias
 
 CREATE (smartphones:Category {title: 'Smartphones'}), 
 (notebooks:Category {title: 'Notebooks'}), 
 (cameras:Category {title: 'Cameras'})
 
-// Smartphones
+// Criando Produtos na categoria Smartphones
 CREATE (lenovo_legion_phone_duel:Product {title: 'Lenovo Legion Phone Duel', price: 2400.00, shippability: true, availability: true})
 CREATE (samsung_galaxy_s21_ultra:Product {title: 'Samsung Galaxy S21 Ultra', price: 3700.00, shippability: true, availability: true})
 CREATE (moto_g100:Product {title: 'Moto G100', price: 2500.50, shippability: true, availability: false})
@@ -101,6 +105,7 @@ CREATE (iphone_12:Product {title: 'Apple iPhone 12', price: 4500.20, shippabilit
 CREATE (xiaomi_mi_11:Product {title: 'Xiaomi Mi 11', price: 2826.87, shippability: true, availability: true})
 CREATE (huawei_p50:Product {title: 'Huawei P50 Lite', price: 2000.00, shippability: true, availability: true})
 
+// Realizando as conexões dos produtos com as categorias
 MERGE (lenovo_legion_phone_duel)-[:IS_IN]->(smartphones)
 MERGE (samsung_galaxy_s21_ultra)-[:IS_IN]->(smartphones)
 MERGE (moto_g100)-[:IS_IN]->(smartphones)
@@ -108,21 +113,23 @@ MERGE (iphone_12)-[:IS_IN]->(smartphones)
 MERGE (xiaomi_mi_11)-[:IS_IN]->(smartphones)
 MERGE (huawei_p50)-[:IS_IN]->(smartphones)
 
-// Notebooks
+// Criando Produtos na categoria Notebooks
 CREATE (acer_aspire_5:Product {title: 'Acer Aspire 5', price: 3800.00, shippability: true, availability: false})
 CREATE (hp_g8:Product {title: 'Notebook HP G8', price: 3600.30, shippability: true, availability: true})
 CREATE (dell_inspiron_15:Product {title: 'Dell Inspiron 15', price: 3250.50, shippability: true, availability: true})
 CREATE (apple_macbook_air_13:Product {title: 'Apple MacBook Air 13', price: 7500.00, shippability: false, availability: true})
 
+// Realizando as conexões dos produtos com as categorias
 MERGE (acer_aspire_5)-[:IS_IN]->(notebooks)
 MERGE (hp_g8)-[:IS_IN]->(notebooks)
 MERGE (dell_inspiron_15)-[:IS_IN]->(notebooks)
 MERGE (apple_macbook_air_13)-[:IS_IN]->(notebooks)
 
-// Cameras
+// Criando Produtos na categoria Cameras
 CREATE (canon_eos_rp:Product {title: 'Câmera Fotográfica EOS RP Body Canon', price: 7500.00, shippability: true, availability: false})
 CREATE (nikon_ricoh:Product {title: 'Nikon Câmera Digital GR III Ricoh', price: 6600.35, shippability: true, availability: true})
 
+// Realizando as conexões dos produtos com as categorias
 MERGE (canon_eos_rp)-[:IS_IN]->(cameras)
 MERGE (nikon_ricoh)-[:IS_IN]->(cameras)
 
@@ -142,6 +149,9 @@ CREATE (ze:Customer {name: 'Zé Roberto Cavazzana', email: 'ze_cavazzana@exemplo
 CREATE (nailinao:Customer {name: 'Nailinao Cortez', email: 'nailinao_cortez@exemplo.com', age: 26})
 CREATE (mariana:Customer {name: 'Mariana Bege', email: 'menina_bege@examplo.com', age: 26})
 
+
+// Realizando as conexões dos produtos com os usuarios baseado no comportamento dos mesmos
+
 MERGE (karla)-[:VIEWED {views_count: 21}]->(nikon_ricoh)
 MERGE (karla)-[:ADDED_TO_WISH_LIST]->(iphone_12)
 MERGE (karla)-[:BOUGHT]->(apple_macbook_air_13)
@@ -158,7 +168,12 @@ MERGE(nailinao)-[:BOUGHT]->(xiaomi_mi_11)
 MERGE(mariana)-[:ADDED_TO_WISH_LIST]->(acer_aspire_5)
 MERGE(mariana)-[:ADDED_TO_WISH_LIST]->(hp_g8)
 MERGE(mariana)-[:BOUGHT]->(huawei_p50)
-MERGE(mariana)-[:BOUGHT]->(lenovo_legion_phone_duel);
+MERGE(mariana)-[:BOUGHT]->(lenovo_legion_phone_duel)
+
+
+// Visualizar o grafo
+match (n) return (n)
+
 
 ----
 
