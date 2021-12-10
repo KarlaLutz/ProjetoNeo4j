@@ -1,4 +1,4 @@
-= Mecanismos de Recomendações
+= Mecanismos para E-mail Retargeting
 :neo4j-version: 2.0.0-RC1
 
 
@@ -28,7 +28,7 @@
 
 Existem diversos tipos de bancos de dados NoSQL, porém quando precisamos tratar especificamente de conexão entre dados que geralmente são problemas que empresas tentam resolver com um banco de dados relacional comum, podemos dizer com toda certeza que um banco de dados baseado em Grafos é a melhor maneira de suportar um cenário onde temos um grande volume de dados e de variedades de estruturas de dados sem contar a alta escalabilidade e velocidade. 
 
-Tendo em mente toda essa capacidade do banco de dados, será tratado neste documento um caso de uso de uma agência de marketing que precisa melhorar o seu mecanismo de recomendação de produto para seus clientes ecommerces, melhorando o desempenho operacional e ajudando na diminuição de gastos com campanhas de marketing que não possuem um ROI positivo.
+Tendo em mente toda essa capacidade do banco de dados, será tratado neste documento um caso de uso de uma agência de marketing que precisa melhorar o seu mecanismo de e-mail retargeting de produtos para seus clientes ecommerces, melhorando o desempenho operacional e ajudando na diminuição de gastos com campanhas de marketing que não possuem um ROI positivo.
 
 
 '''
@@ -188,16 +188,21 @@ Para aumentar as taxas de conversão, devemos oferecer produtos alternativos aos
 
 === Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas
 
-Primeiro, vamos criar uma oferta promocional para um usuário específico pensando nas regras que criamos anteriormente de produtos e preços:
+Primeiro, vamos criar uma oferta promocional para um usuário específico pensando nas regras que criamos anteriormente de produtos e preços.
+A query abaixo busca por produtos que não foram adicionados na wishlist, vistos e nem comprados pela cliente Nailinao Cortez.
+Em seguida criamos uma query oposta que busca pelos produtos comprados, vistos e adicionados na wishlist, é importante cruzar essas informações para que selecionemos produtos das categorias corretas e que ainda não foram vistos pela usuária de alguma forma. 
+
+Por fim, adicionamos que o produto na recomendação não pode custar mais ou menos do que 20% dos produtos visualizados. Não podendo ser 20% a menos para que a empresa não perca a comissão de uma venda mais alta e 20% a mais para que ainda fique no range de interesse de valor da cliente.
+
 
 
 [source,cypher]
 ----
-MATCH (ze:Customer {name: 'Zé Roberto Cavazzana'})
+MATCH (nailinao:Customer {name: 'Nailinao Cortez'})
 MATCH (free_product:Product)
-WHERE NOT ((ze)-->(free_product))
+WHERE NOT ((nailinao)-->(free_product))
 MATCH (product:Product)
-WHERE ((ze)-->(product))
+WHERE ((nailinao)-->(product))
 
 MATCH (free_product)-[:IS_IN]->()<-[:IS_IN]-(product)
 WHERE ((product.price - product.price * 0.20) >= free_product.price <= (product.price + product.price * 0.20))
@@ -208,6 +213,9 @@ RETURN free_product;
 //output
 //table
 
+
+
+
 === Criando o E-mail Retargeting
 
 Agora podemos criar nossa oferta que constará no e-mail. Neste ponto, vamos armazenar o e-mail do usuário como uma propriedade do relacionamento USED_TO_PROMOTE pois os produtos contidos na variável free_product não estão conectados a usuários específicos.
@@ -215,15 +223,6 @@ Agora podemos criar nossa oferta que constará no e-mail. Neste ponto, vamos arm
 
 [source,cypher]
 ----
-MATCH (ze:Customer {name: 'Zé Roberto Cavazzana'})
-MATCH (free_product:Product)
-WHERE NOT ((ze)-->(free_product))
-MATCH (product:Product)
-WHERE ((ze)-->(product))
-
-MATCH (free_product)-[:IS_IN]->()<-[:IS_IN]-(product)
-WHERE ((product.price - product.price * 0.20) >= free_product.price <= (product.price + product.price * 0.20))
-
 CREATE(offer:PromotionalOffer {type: 'personal_replacement_offer', content: 'Oferta de Recomendação Personalizada para ' + ze.name})
 WITH offer, free_product, ze
 MERGE(offer)-[rel:USED_TO_PROMOTE {email: ze.email}]->(free_product)
