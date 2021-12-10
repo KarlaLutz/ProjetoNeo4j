@@ -28,7 +28,7 @@
 
 Existem diversos tipos de bancos de dados NoSQL, porém quando precisamos tratar especificamente de conexão entre dados que geralmente são problemas que empresas tentam resolver com um banco de dados relacional comum, podemos dizer com toda certeza que um banco de dados baseado em Grafos é a melhor maneira de suportar um cenário onde temos um grande volume de dados e de variedades de estruturas de dados sem contar a alta escalabilidade e velocidade. 
 
-Tendo em mente toda essa capacidade do banco de dados, será tratado neste documento um caso de uso de uma agência de marketing que precisa melhorar o seu mecanismo de e-mail retargeting de produtos para seus clientes ecommerces, melhorando o desempenho operacional e ajudando na diminuição de gastos com campanhas de marketing que não possuem um ROI positivo.
+Tendo em mente toda essa capacidade do banco de dados, será tratado neste documento um caso de uso de uma agência de marketing que precisa melhorar o seu mecanismo de e-mail retargeting de produtos para seus clientes e-commerces, melhorando o desempenho operacional e ajudando na diminuição de gastos com campanhas de marketing que não possuem um ROI positivo.
 
 
 '''
@@ -37,11 +37,11 @@ Tendo em mente toda essa capacidade do banco de dados, será tratado neste docum
 
 É difícil encontrar uma empresa online que não utilize algum tipo de mecanismo de recomendação para atingir seus clientes com produtos ou serviços relevantes. Um bom mecanismo de recomendação deve correlacionar muitos dados e ser capaz de detectar rapidamente novos interesses, rapidamente compreendê-los, buscar na web e recomendar de volta para os usuários.
 
-Caso esse mecanismo não seja assertivo pode-se perder investimentos feitos na campanha de marketing por não ter um retorno, onde caso você esteja recomendando produtos para os usuários onde eles não possuem nenhum interesse, será apenas gerado um spam e essa campanha será ignorada. É exatamente o caso da agência de marketing XYZ, um dos produtos que a agência fornece à seus clientes é o E-mail Retargeting. Esse produto funciona com um mecanismo de recomendação que entende através de cookies a navegação do usuário nos websites dos ecommerces (clientes da agência) e dispara um e-mail pós navegação do usuário, com produtos que podem ser de interesse dele baseado no comportamento dele dentro do site.
+Caso esse mecanismo não seja assertivo pode-se perder investimentos feitos na campanha de marketing por não ter um retorno, onde caso você esteja recomendando produtos para os usuários onde eles não possuem nenhum interesse, será apenas gerado um spam e essa campanha será ignorada. É exatamente o caso da agência de marketing XYZ, um dos produtos que a agência fornece à seus clientes é o E-mail Retargeting. Esse produto funciona com um mecanismo de recomendação que entende através de cookies a navegação do usuário nos websites dos e-commerces (clientes da agência) e dispara um e-mail pós navegação do usuário, com produtos que podem ser de interesse dele baseado no comportamento dele dentro do site.
 
-A intenção é que esses produtos sejam produtos relacionados com as categorias pesquisadas e produtos visualizados, porém o mecanismo de e-mail retargeting da agência XYZ está falhando no sentido em que as relações dentro do atual banco de dados relacional não estão atualizando com a velocidade necessária e estão perdendo indexes. Como consequência dessa falha de arquitetura, os clientes estão sendo impactados por e-mails com produtos já comprados e estão entrando com vários chamados de reclamação de spam para os ecommerces.
+A intenção é que esses produtos sejam produtos relacionados com as categorias pesquisadas e produtos visualizados, porém o mecanismo de e-mail retargeting da agência XYZ está falhando no sentido em que as relações dentro do atual banco de dados relacional não estão atualizando com a velocidade necessária e estão perdendo indexes. Como consequência dessa falha de arquitetura, os clientes estão sendo impactados por e-mails com produtos já comprados e estão entrando com vários chamados de reclamação de spam para os e-commerces.
 
-Os ecommerces clientes da XYZ estão desistindo do produto devido a essa falha, alegando que o produto não está trazendo o mínimo de ROI esperado e que na realidade está gerando mais problemas para eles.
+Os e-commerces clientes da XYZ estão desistindo do produto devido a essa falha, alegando que o produto não está trazendo o mínimo de ROI esperado e que na realidade está gerando mais problemas para eles.
 
 
 '''
