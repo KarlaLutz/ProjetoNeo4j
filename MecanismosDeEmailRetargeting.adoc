@@ -12,7 +12,7 @@
 ** <<detalhamento-da-solução, Detalhamento da Solução>>
 ** <<como-bancos-de-dados-em-grafos-podem-ser-eficientes-nesse-cenário, Como Bancos de Dados em Grafos podem ser Eficientes nesse Cenário>>
 * *Modelo de Dados*
-** <<modelo-do-banco-de-dados-de-mecanismos-de-recomendação, Modelo do Banco de Dados de Mecanismos de Recomendação>>
+** <<modelo-do-banco-de-dados-de-mecanismos-de-e-mail-retargeting, Modelo do Banco de Dados de Mecanismos de E-mail Retargeting>>
 * *Configuração do Banco de Dados*
 ** <<exemplo-do-banco-de-dados, Exemplo do Banco de Dados>>
 * *Cypher Queries*
@@ -55,23 +55,22 @@ Para a agência XYZ esse modelo de banco de dados irá substancialmente resolver
 
 === Como Bancos de Dados em Grafos podem ser Eficientes nesse Cenário
 
-A ideia é construirmos uma campanha promocional eficiente que aumente as taxas de conversão dos usuários nos ecommerces. Para alcançar este objetivo o mecanismo de recomendação (e-mail retargeting) deve oferecer produtos alternativos aos usuários, por exemplo, se um usuário mostra interesse em um determinado produto, mas não o compra, devemos criar uma oferta que contenha produtos alternativos baseados nesses dados pré coletados.
+A ideia é construirmos uma campanha promocional eficiente que aumente as taxas de conversão dos usuários nos e-commerces. Para alcançar este objetivo o mecanismo de recomendação (e-mail retargeting) deve oferecer produtos alternativos aos usuários, por exemplo, se um usuário mostra interesse em um determinado produto, mas não o compra, devemos criar uma oferta que contenha produtos alternativos baseados nesses dados pré coletados.
 
 Para criar esse mecanismo nós devemos: 
 
 * Criar uma query que consulte produtos que não estão na Wish List do usuário, que não foram vistos (clicados) e nem comprados;
 * Em paralelos, devemos ter uma query que consulte todas essas informações também. Quais produtos estão na Wish List, que foram vistos (clicados) e comprados;
 * É de extrema importância também restringir as recomendações, por isso devemos nos certificar de que essas duas consultas selecionem produtos nas mesmas categorias;
-* Por fim, por questões de relevância de preço, especificamos que apenas produtos que custam 20% a mais ou menos do que um item específico devem ser recomendados ao cliente.
 
 Pronto, agora é possível criar a promoção com os produtos resultantes das pesquisas das queries acima. O banco de dados em Grafo é super eficiente e excelente quando se trata de  desempenho, independentemente do número e profundidade das queries.
 
 
 '''
 
-== Modelo do Banco de Dados de Mecanismos de Recomendação
+== Modelo do Banco de Dados de Mecanismos de E-mail Retargeting
 
-Os bancos de dados em Grafo tem um design para lidar com grandes quantidades de conexões, fornecendo vantagens como performance, flexibilidade e agilidade que são argumentos chave quando tratamos de um mecanismo de recomendação em marketing.
+Os bancos de dados em Grafo tem um design para lidar com grandes quantidades de conexões, fornecendo vantagens como performance, flexibilidade e agilidade que são argumentos chave quando tratamos de um mecanismo de e-mail retargeting em marketing.
 
 No nosso caso de uso utilizaremos o Neo4j. Um banco de dados que pode lidar facilmente com recomendações, superando significativamente outros bancos de dados relacionais e não relacionais.
  
@@ -188,12 +187,63 @@ Para aumentar as taxas de conversão, devemos oferecer produtos alternativos aos
 
 === Criando as Queries Conforme Regras de Negócio Pré-Estabelecidas
 
-Primeiro, vamos criar uma oferta promocional para um usuário específico pensando nas regras que criamos anteriormente de produtos e preços.
+Primeiro, vamos criar uma oferta promocional para um usuário específico pensando nas regras que criamos anteriormente de produtos.
 A query abaixo busca por produtos que não foram adicionados na wishlist, vistos e nem comprados pela cliente Nailinao Cortez.
 Em seguida criamos uma query oposta que busca pelos produtos comprados, vistos e adicionados na wishlist, é importante cruzar essas informações para que selecionemos produtos das categorias corretas e que ainda não foram vistos pela usuária de alguma forma. 
 
-Por fim, adicionamos que o produto na recomendação não pode custar mais ou menos do que 20% dos produtos visualizados. Não podendo ser 20% a menos para que a empresa não perca a comissão de uma venda mais alta e 20% a mais para que ainda fique no range de interesse de valor da cliente.
+[source,cypher]
+----
+MATCH (nailinao:Customer {name: 'Nailinao Cortez'})
+MATCH (free_product:Product)
+WHERE NOT ((nailinao)-->(free_product))
+MATCH (product:Product)
+WHERE ((nailinao)-->(product))
 
+MATCH (free_product)-[:IS_IN]->()<-[:IS_IN]-(product)
+----
+
+//output
+//table
+
+
+
+Vamos verificar quais são os produtos que retornam como disponíveis para compra:
+
+[source,cypher]
+----
+RETURN free_product;
+----
+
+//output
+//table
+
+
+Os produtos mostrados estão corretos. A cliente Nailinao não teve nenhum tipo de interação com os produtos MotoG100, Lenovo Legion Phone, Apple iPhone e Huawei P50 Lite.
+
+image::https://github.com/KarlaLutz/pictures/blob/main/grafo%202.png[Grafo2]
+
+
+
+
+A partir da resposta acima podemos concluir que a variável produto também está retorno os valores corretos que foram aqueles quais Nailinao teve interação de compra e de adicionar na wishlist.
+
+[source,cypher]
+----
+RETURN product;
+----
+
+//output
+//table
+
+image::https://github.com/KarlaLutz/pictures/blob/main/grafo3.png[Grafo3]
+
+'''
+
+=== Criando o E-mail Retargeting
+
+Agora podemos criar nossa oferta que constará no e-mail. Neste ponto, vamos armazenar o e-mail do usuário como uma propriedade do relacionamento USED_TO_PROMOTE pois os produtos contidos na variável free_product não estão conectados a usuários específicos.
+
+Rodando a Query de forma completa temos:
 
 
 [source,cypher]
@@ -205,29 +255,20 @@ MATCH (product:Product)
 WHERE ((nailinao)-->(product))
 
 MATCH (free_product)-[:IS_IN]->()<-[:IS_IN]-(product)
-WHERE ((product.price - product.price * 0.20) >= free_product.price <= (product.price + product.price * 0.20))
 
-RETURN free_product;
-----
-
-//output
-//table
-
-
-
-
-=== Criando o E-mail Retargeting
-
-Agora podemos criar nossa oferta que constará no e-mail. Neste ponto, vamos armazenar o e-mail do usuário como uma propriedade do relacionamento USED_TO_PROMOTE pois os produtos contidos na variável free_product não estão conectados a usuários específicos.
-
-
-[source,cypher]
-----
-CREATE(offer:PromotionalOffer {type: 'personal_replacement_offer', content: 'Oferta de Recomendação Personalizada para ' + ze.name})
-WITH offer, free_product, ze
-MERGE(offer)-[rel:USED_TO_PROMOTE {email: ze.email}]->(free_product)
+CREATE(offer:PromotionalOffer {type: 'personal_replacement_offer', content: 'Oferta exclusiva para ' + nailinao.name})
+WITH offer, free_product, nailinao
+MERGE(offer)-[rel:USED_TO_PROMOTE {email: nailinao.email}]->(free_product)
 RETURN offer, free_product, rel;
 ----
 
 //output
 //table
+
+
+Recomendações em Grafos:
+
+image::https://github.com/KarlaLutz/pictures/blob/main/grafo4.png[Grafo4]
+
+
+
